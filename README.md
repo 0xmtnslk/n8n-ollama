@@ -18,6 +18,8 @@ sudo ufw status
 sudo -u postgres createuser --interactive
 # Kullanıcı adı: n8nuser
 # Superuser? hayır
+# Shall the new role be allowed to create databases? (y/n) farklı databaseler oluşturacaksa evet yoksa hayır
+# Shall the new role be allowed to create more new roles? (y/n)  buna hayır diyoruz.
 sudo -u postgres createdb n8ndb -O n8nuser
 sudo -u postgres psql
 # Şifre belirle:
