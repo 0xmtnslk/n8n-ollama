@@ -134,3 +134,66 @@ RestartSec=10
 [Install]
 WantedBy=multi-user.target
 ```
+Aktif et ve başlat:
+```
+sudo systemctl daemon-reload
+sudo systemctl enable ollama-preload
+sudo systemctl start ollama-preload
+```
+## 12. Nginx Reverse Proxy Ayarları
+
+```
+nano /etc/nginx/sites-available/n8n.medicalisg.com
+```
+```
+server {
+    listen 80;
+    server_name n8n.medicalisg.com;
+
+    location / {
+        proxy_pass http://127.0.0.1:5678;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+    }
+}
+```
+```
+nano /etc/nginx/sites-available/ollama.medicalisg.com
+```
+```
+server {
+    listen 80;
+    server_name ollama.medicalisg.com;
+
+    location / {
+        proxy_pass http://127.0.0.1:11434;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+    }
+}
+```
+Aktif et
+```
+sudo ln -s /etc/nginx/sites-available/n8n.medicalisg.com /etc/nginx/sites-enabled/
+sudo ln -s /etc/nginx/sites-available/ollama.medicalisg.com /etc/nginx/sites-enabled/
+sudo nginx -t
+sudo systemctl reload nginx
+```
+## 13. Let's Encrypt SSL Sertifikası Alma
+
+```
+sudo certbot --nginx -d n8n.medicalisg.com
+sudo certbot --nginx -d ollama.medicalisg.com
+```
+## 14. Son Kontroller ve Loglar
+
+```
+sudo journalctl -u n8n -f
+sudo journalctl -u ollama -f
+sudo journalctl -u ollama-preload -f
+sudo systemctl status nginx
+```
