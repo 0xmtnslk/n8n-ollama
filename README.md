@@ -79,6 +79,9 @@ sudo systemctl start n8n
 sudo systemctl status n8n
 ```
 ## 7. Ollama Kurulumu
+```
+curl -fsSL https://ollama.com/install.sh | sudo bash
+```
 
 ```
 sudo useradd -m -s /bin/bash ollama
